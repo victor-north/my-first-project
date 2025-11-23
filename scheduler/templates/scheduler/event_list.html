@@ -1,0 +1,51 @@
+{% extends 'scheduler/base.html' %}
+
+{% block title %}Events - Scheduling Application{% endblock %}
+
+{% block content %}
+<h1>Scheduled Events</h1>
+
+{% if events %}
+    <ul class="event-list">
+        {% for event in events %}
+        <li class="event-item">
+            <h3>{{ event.title }}</h3>
+            <div class="event-meta">
+                <p><strong>Start:</strong> {{ event.start_time|date:"Y-m-d H:i" }}</p>
+                <p><strong>End:</strong> {{ event.end_time|date:"Y-m-d H:i" }}</p>
+                {% if event.location %}
+                <p><strong>Location:</strong> {{ event.location }}</p>
+                {% endif %}
+                {% if event.description %}
+                <p><strong>Description:</strong> {{ event.description }}</p>
+                {% endif %}
+            </div>
+            <div style="margin-top: 10px;">
+                <a href="{% url 'event_detail' event.pk %}" class="btn">View</a>
+                <a href="{% url 'event_update' event.pk %}" class="btn">Edit</a>
+                <a href="{% url 'event_delete' event.pk %}" class="btn btn-danger">Delete</a>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+    {% if is_paginated %}
+    <div style="margin-top: 20px;">
+        {% if page_obj.has_previous %}
+            <a href="?page=1" class="btn">First</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="btn">Previous</a>
+        {% endif %}
+
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="btn">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="btn">Last</a>
+        {% endif %}
+    </div>
+    {% endif %}
+{% else %}
+    <p>No events scheduled yet.</p>
+    <a href="{% url 'event_create' %}" class="btn">Create Your First Event</a>
+{% endif %}
+{% endblock %}
